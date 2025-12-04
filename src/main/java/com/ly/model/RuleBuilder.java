@@ -3,6 +3,7 @@ package com.ly.model;
 import com.ly.core.Action;
 import com.ly.core.Condition;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class RuleBuilder {
     private Condition condition;
     private List<Action> actions = new ArrayList<>();
     private boolean exclusive = false;
+    private LocalDateTime effectiveTime;
+    private LocalDateTime expirationTime;
 
     private RuleBuilder() {}
 
@@ -53,6 +56,16 @@ public class RuleBuilder {
         this.exclusive = true;
         return this;
     }
+    
+    public RuleBuilder effectiveTime(LocalDateTime effectiveTime) {
+        this.effectiveTime = effectiveTime;
+        return this;
+    }
+    
+    public RuleBuilder expirationTime(LocalDateTime expirationTime) {
+        this.expirationTime = expirationTime;
+        return this;
+    }
 
     public Rule build() {
         if (id == null) {
@@ -61,6 +74,8 @@ public class RuleBuilder {
         Rule rule = new Rule(id, name != null? name:id, priority);
         rule.setCondition(condition);
         rule.setExclusive(exclusive);
+        rule.setEffectiveTime(effectiveTime);
+        rule.setExpirationTime(expirationTime);
         for (Action action : actions) {
             rule.addAction(action);
         }

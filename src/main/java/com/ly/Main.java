@@ -15,7 +15,9 @@ import static com.ly.impl.FieldComparisonCondition.Operator.GREATER_THAN;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        // 1.Initialize Engine
+        System.out.println("--- Basic Rule Engine Demo ---");
+        
+        // 1. Initialize Engine
         RuleEngine engine = new RuleEngine();
 
         // 2. Define Rules using Builder Pattern
@@ -55,7 +57,7 @@ public class Main {
         engine.registerRule(bigSpenderRule);
 
         // 3. Test Scenarios
-        System.out.println("--- Scenario 1: VIP User with $150 Order ---");
+        System.out.println("\n--- Scenario 1: VIP User with $150 Order ---");
         RuleContext ctx1 = new RuleContext();
         ctx1.put("userType", "VIP");
         ctx1.put("orderTotal", 150.0);
@@ -78,5 +80,10 @@ public class Main {
 
         engine.fire(ctx3);
         System.out.println("Final Price: " + ctx3.get("finalPrice"));
+        
+        // 提示用户可以运行高级演示
+        System.out.println("\n--- Demo Complete ---");
+        System.out.println("For advanced features including complex expressions, lottery, and time-based rules,");
+        System.out.println("please run the AdvancedRuleEngineDemo class.");
     }
 }
