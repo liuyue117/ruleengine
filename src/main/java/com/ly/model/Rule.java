@@ -4,6 +4,7 @@ import com.ly.core.Action;
 import com.ly.core.Condition;
 import com.ly.core.RuleContext;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,8 @@ public class Rule implements Comparable<Rule> {
     private Condition condition;
     private List<Action> actions = new ArrayList<>();
     private boolean exclusive; // If true, stops execution of subsequent rules if this one matches
-    // 互斥 true 则停止执行后续操作，如果与以下条件匹配
+    private LocalDateTime effectiveTime; // Rule effective start time
+    private LocalDateTime expirationTime; // Rule expiration time
 
     public Rule(String id, String name, int priority) {
         this.id = id;
@@ -24,8 +26,17 @@ public class Rule implements Comparable<Rule> {
     }
 
     public boolean evaluate(RuleContext context) {
+        // Check if rule is within effective time range
+        LocalDateTime now = LocalDateTime.now();
+        if (effectiveTime != null && now.isBefore(effectiveTime)) {
+            return false;
+        }
+        if (expirationTime != null && now.isAfter(expirationTime)) {
+            return false;
+        }
+        
         if (condition == null) {
-            return true;// Default to true if no condition
+            return true; // Default to true if no condition
         }
         return condition.evaluate(context);
     }
@@ -47,6 +58,10 @@ public class Rule implements Comparable<Rule> {
     public void setCondition(Condition condition) { this.condition = condition;}
     public boolean isExclusive() {return exclusive;}
     public void setExclusive(boolean exclusive) { this.exclusive = exclusive;}
+    public LocalDateTime getEffectiveTime() { return effectiveTime; }
+    public void setEffectiveTime(LocalDateTime effectiveTime) { this.effectiveTime = effectiveTime; }
+    public LocalDateTime getExpirationTime() { return expirationTime; }
+    public void setExpirationTime(LocalDateTime expirationTime) { this.expirationTime = expirationTime; }
 
     @Override
     public int compareTo(Rule other) {
