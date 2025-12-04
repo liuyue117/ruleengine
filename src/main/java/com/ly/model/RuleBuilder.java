@@ -4,6 +4,7 @@ import com.ly.core.Action;
 import com.ly.core.Condition;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +18,9 @@ public class RuleBuilder {
     private Condition condition;
     private List<Action> actions = new ArrayList<>();
     private boolean exclusive = false;
+    
+    private Date effectiveTime;
+    private Date expirationTime;
 
     private RuleBuilder() {}
 
@@ -54,11 +58,21 @@ public class RuleBuilder {
         return this;
     }
 
+    public RuleBuilder effectiveTime(Date effectiveTime) {
+        this.effectiveTime = effectiveTime;
+        return this;
+    }
+    
+    public RuleBuilder expirationTime(Date expirationTime) {
+        this.expirationTime = expirationTime;
+        return this;
+    }
+    
     public Rule build() {
         if (id == null) {
             throw new IllegalStateException("Rule ID is required");
         }
-        Rule rule = new Rule(id, name != null? name:id, priority);
+        Rule rule = new Rule(id, name != null? name:id, priority, effectiveTime, expirationTime);
         rule.setCondition(condition);
         rule.setExclusive(exclusive);
         for (Action action : actions) {
